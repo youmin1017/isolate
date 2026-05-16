@@ -5,8 +5,8 @@
 VERSION=2.5
 YEAR=2026
 
-PROGRAMS=isolate isolate-check-environment isolate-cg-keeper
-MANPAGES=isolate.1 isolate-check-environment.8 isolate-cg-keeper.8
+PROGRAMS=isolate isolate-check-environment
+MANPAGES=isolate.1 isolate-check-environment.8
 CONFIGS=default.cf systemd/isolate.slice systemd/isolate.service
 
 all: $(PROGRAMS) $(MANPAGES) $(addsuffix .html, $(MANPAGES)) $(CONFIGS)
@@ -88,9 +88,8 @@ clean:
 	rm -f systemd/isolate.service
 
 install: $(PROGRAMS) $(CONFIGS)
-	install -d $(DESTDIR)$(BINDIR) $(DESTDIR)$(SBINDIR) $(DESTDIR)$(BOXDIR) $(DESTDIR)$(CONFIGDIR) $(DESTDIR)$(UNITDIR)
+	install -d $(DESTDIR)$(BINDIR) $(DESTDIR)$(BOXDIR) $(DESTDIR)$(CONFIGDIR) $(DESTDIR)$(UNITDIR)
 	install isolate-check-environment $(DESTDIR)$(BINDIR)
-	install isolate-cg-keeper $(DESTDIR)$(SBINDIR)
 	install -m 4755 isolate $(DESTDIR)$(BINDIR)
 	install -m 644 default.cf $(DESTDIR)$(CONFIG)
 	install -m 644 systemd/isolate.slice systemd/isolate.service $(DESTDIR)$(UNITDIR)
@@ -98,7 +97,7 @@ install: $(PROGRAMS) $(CONFIGS)
 install-doc: $(MANPAGES)
 	install -d $(DESTDIR)$(MAN1DIR) $(DESTDIR)$(MAN8DIR)
 	install -m 644 isolate.1 $(DESTDIR)$(MAN1DIR)/
-	install -m 644 isolate-check-environment.8 isolate-cg-keeper.8 $(DESTDIR)$(MAN8DIR)/
+	install -m 644 isolate-check-environment.8 $(DESTDIR)$(MAN8DIR)/
 
 release: $(addsuffix .html,$(MANPAGES))
 	git tag v$(VERSION)
