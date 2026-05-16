@@ -44,21 +44,14 @@ MAN8DIR = $(MANDIR)/man8
 BOXDIR = $(VARPREFIX)/lib/isolate
 UNITDIR = $(LIBDIR)/systemd/system
 
-SYSTEMD_CFLAGS := $(shell pkg-config libsystemd --cflags)
-SYSTEMD_LIBS := $(shell pkg-config libsystemd --libs)
-
 isolate: isolate.o util.o rules.o cg.o config.o
 	$(CC) $(LDFLAGS) -o $@ $^ $(LIBS)
-
-isolate-cg-keeper: isolate-cg-keeper.o config.o util.o
-	$(CC) $(LDFLAGS) -o $@ $^ $(SYSTEMD_LIBS)
 
 %.o: %.c isolate.h
 	$(CC) $(CFLAGS) -c -o $@ $<
 
 isolate.o: CFLAGS += $(CFLAGS_BUILD)
 config.o: CFLAGS += -DCONFIG_FILE='"$(CONFIG)"'
-isolate-cg-keeper.o: CFLAGS += $(SYSTEMD_CFLAGS)
 
 ASCIIDOC_OPTIONS=-a CONFIG_PATH=$(CONFIG)
 
@@ -81,7 +74,6 @@ ASCIIDOC_OPTIONS=-a CONFIG_PATH=$(CONFIG)
 
 clean:
 	rm -f *.o
-	rm -f isolate isolate-cg-keeper
 	rm -f $(MANPAGES) $(addsuffix .html, $(MANPAGES))
 	rm -f docbook-xsl.css
 	rm -f default.cf
